@@ -70,10 +70,42 @@ def save_streetlights(road_name, distance, out_fc):
     
 
 def show_road_names(pattern=None):
-    pass
+    
+    pattern = pattern.upper()
+
+    wsp = roads_cl_fc
+    arcpy.env.workspace = wsp
+    
+    
+    rows_list = list()
+    
+    if pattern == None:
+        cursor = arcpy.da.SearchCursor(roads_cl_fc, 'ROAD_NAME_')
+        for row in cursor:
+            rows_list.append(row[0])
+            
+        unique_rows = set(rows_list)
+        for i in unique_rows:
+            print(i)
+
+    else:
+        search_fields = arcpy.AddFieldDelimiters(wsp, 'ROAD_NAME_')
+        where_clause = f"{search_fields} LIKE '%{pattern}%'"
+
+        cursor = arcpy.da.SearchCursor(roads_cl_fc, 'ROAD_NAME_', where_clause)
+
+        for row in cursor:
+            rows_list.append(row[0])
+
+        unique_rows = set(rows_list)
+
+        for i in unique_rows:
+            print(i)
 
 #print(_get_unique_values(streetlight_fc, 'STREET_NAM'))
 
 #print(get_streetlight_count('CARLING AVE', 0.0002))
 
-save_streetlights('CARLING AVE', 0.0002, 'E:\\Documents\\acgis\\Week 12\\Week12Prj\\Week12Prj.gdb\\CarlingLights')
+#save_streetlights('CARLING AVE', 0.0002, 'E:\\Documents\\acgis\\Week 12\\Week12Prj\\Week12Prj.gdb\\CarlingLights')
+
+show_road_names('CaRlinG')
