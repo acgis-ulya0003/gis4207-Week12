@@ -47,7 +47,27 @@ def get_streetlight_count(road_name, distance):
     
 
 def save_streetlights(road_name, distance, out_fc):
-    pass
+    if road_name in _get_unique_values(roads_cl_fc, 'ROAD_NAME_'):
+        
+
+        wsp = roads_cl_fc
+        arcpy.env.workspace = wsp
+
+        search_fields = arcpy.AddFieldDelimiters(wsp, 'ROAD_NAME_')
+        where_clause = f"{search_fields} = '{road_name}'"
+        road = arcpy.management.SelectLayerByAttribute(roads_cl_fc, "NEW_SELECTION", where_clause)
+        
+        #lights, count = arcpy.management.SelectLayerByLocation(streetlight_fc, 'WITHIN_A_DISTANCE', road, distance)
+        
+        lights = arcpy.management.SelectLayerByLocation(streetlight_fc, 'WITHIN_A_DISTANCE', road, distance)
+    
+        arcpy.management.CopyFeatures(lights, out_fc)
+
+    else:
+        print('Road name not found.')
+        
+
+    
 
 def show_road_names(pattern=None):
     pass
@@ -55,3 +75,5 @@ def show_road_names(pattern=None):
 #print(_get_unique_values(streetlight_fc, 'STREET_NAM'))
 
 #print(get_streetlight_count('CARLING AVE', 0.0002))
+
+save_streetlights('CARLING AVE', 0.0002, 'E:\\Documents\\acgis\\Week 12\\Week12Prj\\Week12Prj.gdb\\CarlingLights')
