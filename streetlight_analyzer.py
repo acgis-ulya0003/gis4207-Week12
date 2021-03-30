@@ -99,7 +99,7 @@ def show_road_names(pattern=None):
         for i in unique_rows:
             print(i)
 
-print(list(_get_unique_values(roads_cl_fc, road_name_field))[0])
+print(len(_get_unique_values(roads_cl_fc, road_name_field)))
 
 #print(get_streetlight_count('CARLING AVE', 0.0002))
 
