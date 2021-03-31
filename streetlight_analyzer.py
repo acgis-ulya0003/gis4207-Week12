@@ -1,7 +1,7 @@
 import arcpy
 
-streetlight_fc = r'..\..\data\Ottawa\Street_Lights\Street_Lights.shp'
-roads_cl_fc = r'..\..\data\Ottawa\Road_Centrelines\Road_Centrelines.shp'
+streetlight_fc = r'..\..\..\..\data\Ottawa\Street_Lights\Street_Lights.shp'
+roads_cl_fc = r'..\..\..\..\data\Ottawa\Road_Centrelines\Road_Centrelines.shp'
 road_name_field = 'ROAD_NAME_'
 
 
@@ -45,13 +45,14 @@ def get_streetlight_count(road_name, distance):
     
 
 def save_streetlights(road_name, distance, out_fc):
-    if road_name in _get_unique_values(roads_cl_fc, 'ROAD_NAME_'):
+    if road_name in _get_unique_values(roads_cl_fc, road_name_field):
         
 
         wsp = roads_cl_fc
         arcpy.env.workspace = wsp
+        arcpy.env.overwriteOutput = True
 
-        search_fields = arcpy.AddFieldDelimiters(wsp, 'ROAD_NAME_')
+        search_fields = arcpy.AddFieldDelimiters(wsp, road_name_field)
         where_clause = f"{search_fields} = '{road_name}'"
         road = arcpy.management.SelectLayerByAttribute(roads_cl_fc, "NEW_SELECTION", where_clause)
         
@@ -99,10 +100,3 @@ def show_road_names(pattern=None):
         for i in unique_rows:
             print(i)
 
-print(len(_get_unique_values(roads_cl_fc, road_name_field)))
-
-#print(get_streetlight_count('CARLING AVE', 0.0002))
-
-#save_streetlights('CARLING AVE', 0.0002, 'E:\\Documents\\acgis\\Week 12\\Week12Prj\\Week12Prj.gdb\\CarlingLights')
-
-#show_road_names('CaRlinG')
